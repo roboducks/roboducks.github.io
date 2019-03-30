@@ -41,13 +41,14 @@ var updateChart = function (count) {
        console.log(response.result);
        weight = response.result;
         document.getElementById("weight").innerHTML = weight;
+          xhr.timeout = 99; 
       }
 
   };
 
   xhttp.open("GET", "https://api.particle.io/v1/devices/2d0047001047343339383037/analogvalue?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
   xhttp.send();
-  xhr.timeout = 100; 
+
 
 }, 100);
 

@@ -1,37 +1,91 @@
-## Welcome to GitHub Pages
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
 
-You can use the [editor on GitHub](https://github.com/roboducks/roboducks.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+window.onload = function () {
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+var dps = []; // dataPoints
+var chart = new CanvasJS.Chart("chartContainer", {
+	title :{
+		text: "Load"
+	},
+	axisY: {
+    startValue:0,
+		includeZero: "true"
+	},
+	data: [{
+		type: "area",
+		dataPoints: dps
+	}]
+});
 
-```markdown
-Syntax highlighted code block
+var xVal = 0;
 
-# Header 1
-## Header 2
-### Header 3
+var updateInterval = 10;
+var dataLength = 1000; // number of dataPoints visible at any point
+var weight = 0;
 
-- Bulleted
-- List
+var updateChart = function (count) {
 
-1. Numbered
-2. List
+	count = count || 1;
+  setInterval(function(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function(count) {
+      count = count || 1;
 
-**Bold** and _Italic_ and `Code` text
+      if (this.readyState == 4 && this.status == 200) {
+       var response = JSON.parse(xhttp.responseText);
+       console.log(response.result);
+       weight = response.result;
+        document.getElementById("weight").innerHTML = weight;
+      }
 
-[Link](url) and ![Image](src)
-```
+  };
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+  xhttp.open("GET", "https://api.particle.io/v1/devices/2d0047001047343339383037/analogvalue?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
+  xhttp.send();
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/roboducks/roboducks.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+}, 100);
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+
+
+	for (var j = 0; j < count; j++) {
+		yVal = weight*1 ;
+		dps.push({
+			x: xVal,
+			y: yVal
+		});
+		xVal++;
+	}
+
+	if (dps.length > dataLength) {
+		dps.shift();
+	}
+
+	chart.render();
+};
+
+updateChart(dataLength);
+setInterval(function(){updateChart()}, updateInterval);
+
+}
+</script>
+</head>
+<body>
+
+<button type="button">Click Me!</button>
+
+
+ <p id="weight"></p>
+  <br><br>
+  <br><br>
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>

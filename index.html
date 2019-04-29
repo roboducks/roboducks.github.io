@@ -3,11 +3,15 @@
 <head>
   <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
 <script>
+
+var str;
+var result;
 var weight=0;
+var command;
 setInterval(function(){
 var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function(count) {
-    count = count || 1;
+xhttp.onreadystatechange = function() {
+
 
     if (this.readyState == 4 && this.status == 200) {
      var response = JSON.parse(xhttp.responseText);
@@ -18,19 +22,103 @@ xhttp.onreadystatechange = function(count) {
 
 };
 
-xhttp.open("GET", "https://api.particle.io/v1/devices/2d0047001047343339383037/analogvalue?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
+xhttp.open("GET", "https://api.particle.io/v1/devices/2f001c000e47363433353735/analogvalue?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
 xhttp.send();
 
 
 }, 300);
 
+function upload() {
+  var packet;
+  var marked_packet;
+  var packet_min = 0;
+  var packet_max = 30;
+  var packet_number = 0;
+  var arg= "arg=";
+  var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("demo").innerHTML = this.responseText;
+      }
+    };
+
+     for(i=0; i<1;i++){
+        packet = result.slice(packet_min, packet_max);
+        marked_packet = arg.concat(packet);
+
+        xhttp.open("POST", "https://api.particle.io/v1/devices/2f001c000e47363433353735/led?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(marked_packet);
+//packet_min=packet_min+6;
+//packet_max=packet_max+7;
+
+     }
+
+
+}
+
+function level() {
+command = 'arg=1'
+upload_command();
+}
+function stop() {
+command = 'arg=2'
+upload_command();
+}
+function home() {
+command = 'arg=3'
+upload_command();
+}
+
+
+function upload_command() {
+
+  var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("demo").innerHTML = this.responseText;
+      }
+    };
+
+        xhttp.open("POST", "https://api.particle.io/v1/devices/2f001c000e47363433353735/command?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(command);
+//packet_min=packet_min+6;
+//packet_max=packet_max+7;
 
 
 
 
+}
 
 
 window.onload = function () {
+
+
+  var fileInput = document.getElementById('fileInput');
+  var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+  fileInput.addEventListener('change', function(e) {
+    var file = fileInput.files[0];
+    var textType = /text.*/;
+
+    if (file.type.match(textType)) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+      str = reader.result;
+          var patt = /G\1\w+ X(\d*(\.\d*)?)\ Y(\d*(\.\d*)?)/g;
+        result = str.match(patt);
+        fileDisplayArea.innerText = result;
+      }
+
+      reader.readAsText(file);
+    } else {
+      fileDisplayArea.innerText = "File not supported!"
+    }
+  });
+
+
 
 var dps = []; // dataPoints
 var chart = new CanvasJS.Chart("chartContainer", {
@@ -102,11 +190,6 @@ setInterval(function(){updateChart()}, updateInterval);
 
 }
 
-
-
-
-
-
     body{
       margin: 0;
       background: #dbdbdb;
@@ -122,7 +205,7 @@ setInterval(function(){updateChart()}, updateInterval);
       text-align: center;
     }
   .file{
-    height: 100px;
+    height: 50px;
     width: 100%;
     background: #fff9ed;
   }
@@ -133,13 +216,14 @@ margin-left: 10%;
   }
 
 .print_button{
+  display: inline;
  width: 70px;
  height: 70px;
  font-size: 20px;
  font-weight: bold;
   background-color: #FFA500;
 
-margin-left: 50%;
+margin-left: 42%;
 
 }
 
@@ -151,40 +235,44 @@ text-align: center;
 width:40%;
 height: 30px;
 background-color:#00ffe1;
-
-
 }
 
-.cancel_button{
-  width: 150px;
-  height: 70px;
-  font-size: 20px;
-  font-weight: bold;
+#fileDisplayArea {
+  margin-top: 700px;
+  width: 100%;
+  overflow-x: auto;
+}
+.stop_button{
+  display: inline;
+ width: 70px;
+ height: 70px;
+ font-size: 20px;
+ font-weight: bold;
   background-color: #FFA500;
 
+
+
+}.home_button{
+display: inline;
+ width: 70px;
+ height: 70px;
+ font-size: 20px;
+ font-weight: bold;
+  background-color: #FFA500;
+
+
+
+}.level_button{
+  display: inline;
+ width: 70px;
+ height: 70px;
+ font-size: 20px;
+ font-weight: bold;
+  background-color: #FFA500;
+
+
 }
 
-
-
-    #progress_bar {
-      margin: 10px 0;
-      padding: 3px;
-      border: 1px solid #000;
-      font-size: 14px;
-      clear: both;
-      opacity: 0;
-      -moz-transition: opacity 1s linear;
-      -o-transition: opacity 1s linear;
-      -webkit-transition: opacity 1s linear;
-    }
-    #progress_bar.loading {
-      opacity: 1.0;
-    }
-    #progress_bar .percent {
-      background-color: #99ccff;
-      height: auto;
-      width: 0;
-    }
   </style>
 <div class="header">
  <p>Prometheus</p>
@@ -192,81 +280,30 @@ background-color:#00ffe1;
 
 
 
-
+<button class="print_button" onclick="upload();">Print</button>
+<button class="home_button" onclick="home();">Home</button>
+<button class="level_button" onclick="level();">Level</button>
+<button class="stop_button" onclick="stop();">Stop</button>
 
   <div class="file">
 <div class="file_position">
-  <input type="file" id="files" name="file" />
-  <button class="cancel_button" onclick="abortRead();">Cancel read</button>
+  <div>
+  			Select a text file:
+  			<input type="file" id="fileInput">
+  		</div>
+  		<pre id="fileDisplayArea"><pre>
 
-  <button class="print_button" onclick="upload();">Print</button>
-  <div id="progress_bar"><div class="percent">0%</div></div>
+  	</div>
+
+
+
 
 </div>
 </div>
 
 
   <script>
-    var reader;
-    var progress = document.querySelector('.percent');
 
-    function abortRead() {
-      reader.abort();
-    }
-
-    function errorHandler(evt) {
-      switch(evt.target.error.code) {
-        case evt.target.error.NOT_FOUND_ERR:
-          alert('File Not Found!');
-          break;
-        case evt.target.error.NOT_READABLE_ERR:
-          alert('File is not readable');
-          break;
-        case evt.target.error.ABORT_ERR:
-          break; // noop
-        default:
-          alert('An error occurred reading this file.');
-      };
-    }
-
-    function updateProgress(evt) {
-      // evt is an ProgressEvent.
-      if (evt.lengthComputable) {
-        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-        // Increase the progress bar length.
-        if (percentLoaded < 100) {
-          progress.style.width = percentLoaded + '%';
-          progress.textContent = percentLoaded + '%';
-        }
-      }
-    }
-
-    function handleFileSelect(evt) {
-      // Reset progress indicator on new file selection.
-      progress.style.width = '0%';
-      progress.textContent = '0%';
-
-      reader = new FileReader();
-      reader.onerror = errorHandler;
-      reader.onprogress = updateProgress;
-      reader.onabort = function(e) {
-        alert('File read cancelled');
-      };
-      reader.onloadstart = function(e) {
-        document.getElementById('progress_bar').className = 'loading';
-      };
-      reader.onload = function(e) {
-        // Ensure that the progress bar displays 100% at the end.
-        progress.style.width = '100%';
-        progress.textContent = '100%';
-        setTimeout("document.getElementById('progress_bar').className='';", 2000);
-      }
-
-      // Read in the image file as a binary string.
-      reader.readAsBinaryString(evt.target.files[0]);
-    }
-
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
   </script>
 <div class="weight_value">
     <h2>  Suction force = <span id="weight"> </span></h2>

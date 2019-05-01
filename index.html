@@ -45,7 +45,7 @@ function upload() {
      for(i=0; i<1;i++){
         packet = result.slice(packet_min, packet_max);
         marked_packet = arg.concat(packet);
-
+        document.getElementById("packet_sent").innerHTML = marked_packet;
         xhttp.open("POST", "https://api.particle.io/v1/devices/2f001c000e47363433353735/led?access_token=f6b3a7fcd7468c38a62e5adc8c0fbb293c741067", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(marked_packet);
@@ -56,7 +56,10 @@ function upload() {
 
 
 }
-
+function print() {
+command = 'arg=10'
+upload_command();
+}
 function level() {
 command = 'arg=11111'
 upload_command();
@@ -131,8 +134,8 @@ window.onload = function () {
 
       reader.onload = function(e) {
       str = reader.result;
-          var patt = /G\1\w+ X(\d*(\.\d*)?)\ Y(\d*(\.\d*)?)/g;
-        result = str.match(patt);
+          var pattern = /G\1\w+ X(\d*(\.\d*)?)\ Y(\d*(\.\d*)?)/g;
+        result = str.match(pattern);
         fileDisplayArea.innerText = result;
       }
 
@@ -297,7 +300,7 @@ display: inline;
    height: 70px;
    font-size: 20px;
    font-weight: bold;
-    background-color: pink;
+    background-color: #ff9b21;
   }
 
   .down_button {
@@ -308,39 +311,46 @@ display: inline;
    font-weight: bold;
     background-color: #FFA500;
   }
+.control{
 
+margin-top: -80px;
+margin-left:70%;
+
+}
 
   </style>
 <div class="header">
+
  <p>Prometheus</p>
 </div>
 
 
 
-<button class="print_button" onclick="upload();">Print</button>
+<button class="print_button" onclick="print();">Print</button>
 <button class="home_button" onclick="home();">Home</button>
 <button class="level_button" onclick="level();">Level</button>
 <button class="stop_button" onclick="stop();">Stop</button>
 
   <div class="file">
 <div class="file_position">
-  
+
   			Select a text file:
   			<input type="file" id="fileInput">
-  		
+
   		<pre id="fileDisplayArea"><pre>
 
   	</div>
 </div>
 
-
 <div class="weight_value">
     <h2>  Suction force = <span id="weight"> </span></h2>
 </div>
+
 <div class="control">
-<button class="up_button" onclick="z_up_very_large();">Z+++</button>  
+<button class="up_button" onclick="z_up_very_large();">Z+++</button>
 <button class="up_button" onclick="z_up_large();">Z++</button>
 <button class="up_button" onclick="z_up();">Z+</button>
+<button class="up_button" onclick="stop_button;">Stop</button>
 <button class="up_button" onclick="z_down();">Z-</button>
 <button class="up_button" onclick="z_down_large();">Z--</button>
 <button class="up_button" onclick="z_down_very_large();">Z---</button>

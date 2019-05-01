@@ -17,7 +17,7 @@ xhttp.onreadystatechange = function() {
      var response = JSON.parse(xhttp.responseText);
      console.log(response.result);
   weight = response.result;
-      document.getElementById("weight").innerHTML = weight;
+      document.getElementById("weight").innerHTML = weight.toFixed(2);
     }
 
 };
@@ -58,18 +58,42 @@ function upload() {
 }
 
 function level() {
-command = 'arg=1'
+command = 'arg=11111'
 upload_command();
 }
 function stop() {
-command = 'arg=2'
+command = 'arg=22222'
 upload_command();
 }
 function home() {
-command = 'arg=3'
+command = 'arg=33333'
 upload_command();
 }
 
+function z_up_large() {
+command = 'arg=44444'
+upload_command();
+}
+function z_up() {
+command = 'arg=55555'
+upload_command();
+}
+function z_down() {
+command = 'arg=66666'
+upload_command();
+}
+function z_down_large() {
+command = 'arg=77777'
+upload_command();
+}
+function z_down_very_large() {
+command = 'arg=88888'
+upload_command();
+}
+function z_up_very_large() {
+command = 'arg=99999'
+upload_command();
+}
 
 function upload_command() {
 
@@ -198,8 +222,8 @@ setInterval(function(){updateChart()}, updateInterval);
     .weight_value{
       font-size: 20px;
       margin-top: 70px;
-      margin-left:33%;
-      width: 600px;
+      margin-left:5%;
+      width: 300px;
       background-color: #fff9ed;
       border-radius: 20px;
       text-align: center;
@@ -250,8 +274,6 @@ background-color:#00ffe1;
  font-weight: bold;
   background-color: #FFA500;
 
-
-
 }.home_button{
 display: inline;
  width: 70px;
@@ -260,18 +282,33 @@ display: inline;
  font-weight: bold;
   background-color: #FFA500;
 
-
-
-}.level_button{
+}
+.level_button{
   display: inline;
  width: 70px;
  height: 70px;
  font-size: 20px;
  font-weight: bold;
   background-color: #FFA500;
-
-
 }
+  .up_button {
+    display: inline;
+   width: 70px;
+   height: 70px;
+   font-size: 20px;
+   font-weight: bold;
+    background-color: pink;
+  }
+
+  .down_button {
+    display: inline;
+   width: 70px;
+   height: 70px;
+   font-size: 20px;
+   font-weight: bold;
+    background-color: #FFA500;
+  }
+
 
   </style>
 <div class="header">
@@ -287,28 +324,28 @@ display: inline;
 
   <div class="file">
 <div class="file_position">
-  <div>
+  
   			Select a text file:
   			<input type="file" id="fileInput">
-  		</div>
+  		
   		<pre id="fileDisplayArea"><pre>
 
   	</div>
-
-
-
-
-</div>
 </div>
 
 
-  <script>
-
-  </script>
 <div class="weight_value">
     <h2>  Suction force = <span id="weight"> </span></h2>
+</div>
+<div class="control">
+<button class="up_button" onclick="z_up_very_large();">Z+++</button>  
+<button class="up_button" onclick="z_up_large();">Z++</button>
+<button class="up_button" onclick="z_up();">Z+</button>
+<button class="up_button" onclick="z_down();">Z-</button>
+<button class="up_button" onclick="z_down_large();">Z--</button>
+<button class="up_button" onclick="z_down_very_large();">Z---</button>
+</div>
 
- </div>
   <br><br>
   <br><br>
 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
